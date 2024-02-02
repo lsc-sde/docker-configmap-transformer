@@ -1,2 +1,3 @@
-# docker-configmap-transformer
-Docker Image for ConfigMap Transformer
+# docker-configmap-transformer-controller
+Docker Image for ConfigMap Transformer Controller
+

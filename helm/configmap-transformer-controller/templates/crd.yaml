@@ -1,0 +1,87 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: configmaptransforms.xlscsde.nhs.uk
+spec:
+  scope: Namespaced
+  group: xlscsde.nhs.uk
+  names:
+    kind: ConfigMapTransform
+    plural: configmaptransforms
+    singular: configmaptransform
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties: 
+                sourceRef:
+                  type: object
+                  description: |-
+                    Reference to the source configmap we're pulling from
+                  properties:
+                    name: 
+                      type: string
+                      description: |-
+                        Name of the config map to transform 
+                    namespace:
+                      type: string
+                      default: ""
+                      description: |-
+                        Namespace of the configmap to transform - defaults to current namespace if not populated
+                targetConfigMap:
+                  type: string
+                  description: |-
+                    Name of the target configmap to create
+                transforms:
+                  type: array
+                  description: |-
+                    The type of transform to apply
+                  items:
+                    type: object
+                    properties: 
+                      key:
+                        type: string
+                        description: |-
+                          The key from the source configmap
+                      type:
+                        type: string
+                        enum: 
+                        - tobase64
+                        - copy
+                        description: |-
+                          The type of transformation to apply. Options are:
+                            "tobase64" - Transforms the contents of the configmap key to a base64 value
+                            "copy" - copies the value from the original configmap to the new one
+                        default: copy
+            status:
+              type: object
+              properties:
+                statusText:
+                  type: string
+                source:
+                  type: object
+                  properties:
+                    lastResourceVersion:
+                      type: string
+      additionalPrinterColumns:
+      - name: SourceNamespace
+        type: string
+        jsonPath: .spec.sourceRef.namespace
+
+      - name: SourceConfigMap
+        type: string
+        jsonPath: .spec.sourceRef.name
+
+      - name: TargetConfigMap
+        type: string
+        jsonPath: .spec.targetConfigMap
+
+      - name: LastResourceVersion
+        type: string
+        jsonPath: .status.source.lastResourceVersion
