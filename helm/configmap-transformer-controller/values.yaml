@@ -1,7 +1,0 @@
-replicas: 1
-image: lscsde/configmap-transformer-controller:0.1.0
-nodeSelector: {}
-tolerations: []
-volumes: []
-volumeMounts: []
-resources: {}
